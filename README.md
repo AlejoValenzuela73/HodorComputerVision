@@ -48,4 +48,6 @@ El trabajo desarrollado se dividio en:
 
 En este caso, el sistema se encarga de detectar las clases de objetos del mundo de obstaculos definidos, y luego se procesa la informacion referida a la distancia y angulo a la que se encuentra dicho obstaculo para ser comunicado a la etapa de movimiento.
 
+La distancia se calcula al centro del borde inferior del obstculo detectado, ya que es el sitio donde se encuentra apoyado en el piso y por ende, nos permite calcular la distancia.
+
 <a href="https://github.com/AlejoValenzuela73/HodorComputerVision"> <img src="./HODOR_detection.gif"> </a>
