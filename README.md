@@ -51,3 +51,7 @@ En este caso, el sistema se encarga de detectar las clases de objetos del mundo 
 La distancia se calcula al centro del borde inferior del obstculo detectado, ya que es el sitio donde se encuentra apoyado en el piso y por ende, nos permite calcular la distancia.
 
 <a href="https://github.com/AlejoValenzuela73/HodorComputerVision"> <img src="./HODOR_detection.gif"> </a>
+
+El siguiente video muestra el comportamiento desde el sistema de referencia de HODOR:
+
+<a href="https://github.com/AlejoValenzuela73/HodorComputerVision"> <img src="./mapa_HODOR_detection.gif"> </a>
