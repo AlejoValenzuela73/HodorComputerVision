@@ -21,10 +21,15 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 
-#modo = 1    # Solo muestro la imagen con los resultados y guardo la imagen
-modo = 2    # Solo muestro el mapa en coord. polares y guardo la imagen
-#modo = 3    # muestro ambos y guardo ambos
-save = 'yes'    #yes/no para guardar los datos
+#cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW) # this is the magic!
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+modo = 1  # Solo muestro la imagen con los resultados y guardo la imagen
+# modo = 2    # Solo muestro el mapa en coord. polares y guardo la imagen
+# modo = 3    # muestro ambos y guardo ambos
+save = 'no'  # yes/no para guardar los datos
 
 # Puntos dados (px, distance_cm)
 puntos = np.array([(343, 324.5), (370, 264.5), (413, 204.5), (493, 144.5), (570, 114.5), (690, 84.5), (720, 77.3)])
@@ -40,12 +45,13 @@ f_interp = interp1d(x, y, kind='cubic')
 x_interp = np.linspace(min(x), max(x), 100)
 y_interp = f_interp(x_interp)
 
+
 def obstaculos(x2, y2):
     # x1, y1 son los puntos del centro inferior de la imagen (x1, y1 = 640, 720)
     # x2, y2 son los puntos del centro inferior del obstaculo
-    
+
     x1, y1 = 640, 720
-    
+
     vector1 = [x2 - x1, y2 - y1]  # Vector formado por (x1, y1) y (x2, y2)
     vector2 = [1280 - x1, 720 - y1]  # Vector formado por (x2, y2) y (1280, 720)
 
@@ -95,13 +101,14 @@ apAng = 35  # grados
 altura_camara = 27.6
 distancia_inferior = 24.5 + 60
 
-while True:
-    # ret, frame = cap.read()   (para el caso de camara)
-    
-    # En caso de trabajar con imagenes guardadas, iteramo sobre los nombres de los archivos para leer las imágenes
-    for nombre_archivo in nombres_archivos:
-        ruta_imagen = os.path.join(source, nombre_archivo)
-        frame = cv2.imread(ruta_imagen)
+while cap.isOpened():
+    success, frame = cap.read()  # (para el caso de camara)
+
+    if success:
+        # En caso de trabajar con imagenes guardadas, iteramo sobre los nombres de los archivos para leer las imágenes
+        # for nombre_archivo in nombres_archivos:
+        #    ruta_imagen = os.path.join(source, nombre_archivo)
+        #    frame = cv2.imread(ruta_imagen)
         image_height, image_width = frame.shape[:2]
         results = model.track(frame, conf=0.5, iou=0.5, show=False)
 
@@ -121,7 +128,8 @@ while True:
                 x2 = int(x2)
                 y1 = int(y1)
                 y2 = int(y2)
-                id = int(id)
+                id = id
+                #id = int(id)
 
                 if y2 > 343 and y2 <= 720:
                     print(f'y1: {y1}, y2: {y2}')
@@ -172,7 +180,6 @@ while True:
                     # Dibujo el recuadro con un color diferente para cada clase
                     cv2.rectangle(frame, (x1, y1), (x2, y2), color, 3)
 
-
                     # Dibujo una línea desde el punto de inicio al punto final
                     cv2.arrowedLine(frame, start_point, end_point, color, thickness)
 
@@ -196,7 +203,7 @@ while True:
         print(id_class_obstaculo)
 
         if modo == 1 or modo == 3:
-            cv2.imshow("frame", frame)  #En caso de ejecutar en google collab, comentar esta linea
+            cv2.imshow("frame", frame)  # En caso de ejecutar en google collab, comentar esta linea
             # cv2_imshow(frame)         #En caso de ejecutar en google collab, descomentar esta linea
             if save == 'yes':
                 cv2.imwrite('./results/' + nombre_archivo, frame)
@@ -229,7 +236,6 @@ while True:
                 # plt.savefig(ruta_carpeta + nombre_archivo)
             plt.show()
 
-
-        if cv2.waitKey(1) == 27:
-            break
-    break
+    if cv2.waitKey(1) == 27:
+        break
+# break
